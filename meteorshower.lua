@@ -240,34 +240,35 @@ function eventChatCommand(n, cmd)
                 	tfm.exec.newGame("@7731076", true)
                 end
 			else
-                skips = skips + 1
+              skips = skips + 1
             	tfm.exec.chatMessage("<PT>» <N>Você votou para pular a partida.",n)
             	if skips == 2 then
                 	tfm.exec.chatMessage("<PT>» <N>A partida foi pulada.")
                 	tfm.exec.newGame("@7731076", true)
                 end
-        	end
-    	end
+        		end
+    		end
     end
 
     elseif cmd == "skiptoggle" then
         if n == admin2 or n == admin1 then
-        if podeSkip == false then
-            podeSkip = true
-        elseif podeSkip then
-            podeSkip = false
+			if podeSkip == false then
+				podeSkip = true
+			elseif podeSkip then
+				podeSkip = false
+			end
         end
     end
 
     elseif cmd == "forceskip" then
         if n == admin2 or n == admin1 then
-        tfm.exec.chatMessage("<PT>» <N>A partida foi pulada forçadamente.")
-        tfm.exec.newGame("@7731076", true)
+			tfm.exec.chatMessage("<PT>» <N>A partida foi pulada forçadamente.")
+			tfm.exec.newGame("@7731076", true)
         end
     end
 
 	elseif cmd == "ajuda" then
-		tfm.exec.chatMessage("<PT>» <V>Como usar os powerups<N>: Para usar um powerup, você deve apertar E no teclado, você pode escolher um powerup clicando nos botões no canto superior esquerdo.<BR><PT>» <V>Comandos<N>: <VP>!afk<N> ativa o modo afk. <VP>!skip<N> vota para pular a partida.", n)
+				tfm.exec.chatMessage("<PT>» <V>Como usar os powerups<N>: Para usar um powerup, você deve apertar E no teclado, você pode escolher um powerup clicando nos botões no canto superior esquerdo.<BR><PT>» <V>Comandos<N>: <VP>!afk<N> ativa o modo afk. <VP>!skip<N> vota para pular a partida.", n)
     end
 end
 
