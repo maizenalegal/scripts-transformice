@@ -95,11 +95,11 @@ function eventPlayerWon(n)
 end
 
 function eventNewPlayer(n)
-	ui.setMapName("<J>#<N>meteorshower                                                                                                                                                                                    ")
+	ui.setMapName("<J>#<N>collapse                                                                                                                                                                                    ")
     system.bindKeyboard(n,69,true)
     ui.addTextArea(1,"<a href='event:pup1'><CH>Vida dupla</a>",n,30,50,0,0,0xffffff,0x39ff14,1,true)
     ui.addTextArea(2,"<a href='event:pup2'><CH>Teleporte</a>",n,30,80,0,0,0xffffff,0x39ff14,1,true)
-    tfm.exec.chatMessage("<PT>» <N>Bem-vindo ao <J>#<N>meteorshower, aqui, você deve sobreviver e desviar dos meteóros até chegar na toca. Use o comando !ajuda para ajuda.",n)
+    tfm.exec.chatMessage("<PT>» <N>Bem-vindo ao <J>#<N>collapse, aqui, você deve sobreviver e desviar das pedras até chegar na toca. Use o comando !ajuda para ajuda.",n)
     	if not plrs[n] then
             plrs[n] = {
                 powerUp = 2,
@@ -113,13 +113,13 @@ function eventNewPlayer(n)
 end
 
 function eventNewGame()
-    ui.setMapName("<J>#<N>meteorshower                                                                                                                                                                                    ")
+    ui.setMapName("<J>#<N>collapse                                                                                                                                                                                    ")
     tfm.exec.setGameTime(60)
     primeiraVez = true
     vivos = 0
     skips = 0
 	
-	  for i=1,math.random(5,15) do
+	  for i=1,10 do
     	  tfm.exec.addPhysicObject(math.random(0,100000000),math.random(300,2700), 350,{
           type = 5,
           width = math.random(30,70),
