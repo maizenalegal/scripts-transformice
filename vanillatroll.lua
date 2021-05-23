@@ -31,7 +31,7 @@ function eventLoop(tempoPassado, tempoFaltando)
 		if math.random(2) == 1 then
         	tfm.exec.newGame(tostring(math.random(1,70)));
 		else
-			tfm.exec.newGame(mapas[math.random(#troll)]);
+			tfm.exec.newGame(troll[math.random(#troll)]);
 		end
     end
 end
@@ -39,5 +39,5 @@ end
 if math.random(2) == 1 then
 	tfm.exec.newGame(tostring(math.random(1,70)));
 else
-	tfm.exec.newGame(mapas[math.random(#troll)]);
+	tfm.exec.newGame(troll[math.random(#troll)]);
 end
