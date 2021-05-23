@@ -119,7 +119,7 @@ function eventNewGame()
     vivos = 0
     skips = 0
 	
-	  for i=1,10 do
+	  for i=1,math.random(5,15) do
     	  tfm.exec.addPhysicObject(math.random(0,100000000),math.random(300,2700), 350,{
           type = 5,
           width = math.random(30,70),
@@ -218,7 +218,6 @@ function eventChatCommand(n, cmd)
             plrs[n].estaAfk = false
             tfm.exec.chatMessage("<PT>» <N>Você saiu do modo afk, você voltará na próxima partida.",n)
         end
-	end
 
     elseif cmd == "skip" then
         if plrs[n].votouSkip then
@@ -249,7 +248,6 @@ function eventChatCommand(n, cmd)
                 end
 			end
     	end
-    end
 
     elseif cmd == "skiptoggle" then
         if n == admin2 or n == admin1 then
@@ -259,14 +257,12 @@ function eventChatCommand(n, cmd)
 				podeSkip = false
 			end
         end
-    end
 
     elseif cmd == "forceskip" then
         if n == admin2 or n == admin1 then
 			tfm.exec.chatMessage("<PT>» <N>A partida foi pulada forçadamente.")
 			tfm.exec.newGame("@7731076", true)
         end
-    end
 
 	elseif cmd == "ajuda" then
 		tfm.exec.chatMessage("<PT>» <V>Como usar os powerups<N>: Para usar um powerup, você deve apertar E no teclado, você pode escolher um powerup clicando nos botões no canto superior esquerdo.<BR><PT>» <V>Comandos<N>: <VP>!afk<N> ativa o modo afk. <VP>!skip<N> vota para pular a partida.", n)
