@@ -83,9 +83,7 @@ end
 
 
 function changeTurn(tookLong)
-	print("legal")
 	if tookLong == true then
-		print("aqui")
 		print(db[gameInfo.turnKey].alive)
 		print(db[gameInfo.turnKey].hasShot)
 		tfm.exec.killPlayer(gameInfo.turn)
@@ -93,7 +91,6 @@ function changeTurn(tookLong)
 		gameInfo.alivePlayers = gameInfo.alivePlayers - 1
 		sendMsg(gameInfo.turn.. "" ..translation.tookLong, "blue")
 	else
-		print("na rel e aqui")
 		-- obrigado stackoverflow eu te amo
 		local keyset = {}
 		for k in pairs(db) do
@@ -158,7 +155,6 @@ function endGame()
 end
 
 function startGame()
-	print("oi")
 	gameInfo.gameStarted = true --gdb
 	gameInfo.choosingPlayers = false
 	gameInfo.alivePlayers = neededPlayers --gdb
@@ -254,9 +250,9 @@ end
 
 function eventChatCommand(n, cmd)
 	if cmd == "help" or cmd == "ajuda" then
-		sendMsg("sem comandos ainda ¯\\_(ツ)_/¯", "green", n)
+		sendMsg("Roleta-russa é um jogo de azar onde os participantes colocam uma bala — tipicamente apenas uma — em uma das câmaras de um revólver. O tambor do revólver é girado e fechado, de modo a que localização da bala seja desconhecida. Os participantes apontam o revólver para suas cabeças e atiram, correndo o risco da provável morte caso a bala esteja na câmara engatilhada.<BR>Tirado da Wikipedia.", "green", n)
 	elseif cmd == "comandos" or cmd == "commands" then
-		sendMsg("sem comandos ainda ¯\\_(ツ)_/¯", "green", n)
+		sendMsg("<J>!<N>ajuda — Mostra como o jogo funciona.", "green", n)
 	end
 end
 
