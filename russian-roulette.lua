@@ -11,7 +11,7 @@ tfm.exec.setRoomMaxPlayers(30)
 
 jogadores = 0
 db = {}
-neededPlayers = 2
+neededPlayers = 6
 
 sangues = {"15ef8a9af77.png","15ef8aaa9c6.png","15ef8ab01f6.png","15ef8abd01f.png","15ef8ac0c82.png","15ef8ac9b50.png","15ef8accd61.png","15ef8ad03ec.png","15ef8ad2e52.png","15ef8ad5ba3.png","15ef8ad8721.png","15ef8add6f9.png"}
 
