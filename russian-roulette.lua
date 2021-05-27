@@ -7,16 +7,13 @@ for index, value in next, {'AutoShaman', 'AutoNewGame', 'AutoTimeLeft', 'Physica
     tfm.exec['disable' .. value]()
 end
 tfm.exec.newGame("@7857146")
-tfm.exec.setRoomMaxPlayers(6)
+tfm.exec.setRoomMaxPlayers(30)
 
+jogadores = 0
 db = {}
+neededPlayers = 2
 
-gameInfo = {
-	alivePlayers = 0,
-	turn = "",
-	gameStarted = false,
-	choosingPlayers = false
-}
+sangues = {"15ef8a9af77.png","15ef8aaa9c6.png","15ef8ab01f6.png","15ef8abd01f.png","15ef8ac0c82.png","15ef8ac9b50.png","15ef8accd61.png","15ef8ad03ec.png","15ef8ad2e52.png","15ef8ad5ba3.png","15ef8ad8721.png","15ef8add6f9.png"}
 
 words = {
 	"FLLMALL",
@@ -35,21 +32,21 @@ words = {
 
 translations = {
 	br = {
-		welcome = "Bem-vindo ao <J>#<R>russianroulette<N>. Use o comando <J>!<N>comandos para saber os comandos. Use o comando <J>!<N>tutorial para saber como o jogo funciona.",
+		welcome = "Bem-vindo ao <J>#<R>russianroulette<N>. Use o comando <J>!<N>comandos para saber os comandos. Use o comando <J>!<N>tutorial para saber como o jogo funciona. Este é apenas um teste. Caso você ache algum glitch/bug, reporte para Yuri400#0000.",
 		playerJoined = "entrou.",
 		playerLeft = "saiu. ficou com medokkkkkkkkk",
 		starting = "Jogo começando...",
 		started = "O jogo começou. Boa sorte.",
-		playerDied = "morreu.",
-		playerSurvived = "sobreviveu. A arma não atirou.",
+		playerDied = " morreu.",
+		playerSurvived = " sobreviveu. A arma não atirou.",
 		yourTurn = ", é a sua vez. Você tem 5 segundos. Aperte espaço para atirar.",
-		tookLong = ", você demorou demais. passando a vez para outra pessoa.",
-		choosePlayers = "Existem mais pessoas na sala do que o jogo suporta. As primeiras 5 pessoas a falarem \"PLACEHOLDER\" entrarão no jogo.",
+		tookLong = " morreu por demorar demais para atirar.",
+		choosePlayers = "Existem mais pessoas na sala do que o jogo suporta. As primeiras " ..neededPlayers.. " pessoas a falarem \"PLACEHOLDER\" entrarão no jogo.",
 		gameEnd = "O jogo terminou!",
 		commands = "" -- todo
 	},
 	en = {
-		welcome = "Welcome to <J>#<R>russianroulette<N>. Use <J>!<N>commands to know the commands. Use <J>!<N>tutorial to know how to play the game.",
+		welcome = "Welcome to <J>#<R>russianroulette<N>. Use <J>!<N>commands to know the commands. Use <J>!<N>tutorial to know how to play the game. This is only a test. If you find any glitch/bug report it to Yuri400#0000.",
 		playerJoined = " joined.",
 		playerLeft = " left. lol scared",
 		starting = "The game is starting...",
@@ -57,11 +54,20 @@ translations = {
 		playerDied = " died.",
 		playerSurvived = " survived. The gun didn't go off.",
 		yourTurn = ", it's your turn. You have 5 seconds. Press space to shoot.",
-		tookLong = ", you took too long, choosing a new player.",
-		choosePlayers = "There are more people in the room than the game supports. The first 5 people to say \"PLACEHOLHDER\" will enter the game.",
+		tookLong = " died due to tooking too long to shot.",
+		choosePlayers = "There are more people in the room than the game supports. The first " ..neededPlayers.. " people to say \"PLACEHOLDER\" will enter the game.",
 		gameEnd = "The game has ended!",
 		commands = "" -- todo
 	}
+}
+
+gameInfo = {
+	alivePlayers = 0,
+	turn = "",
+	turnKey = "",
+	word = words[math.random(#words)],
+	gameStarted = false,
+	choosingPlayers = false
 }
 
 translation = translations[tfm.get.room.community] or translations.en
@@ -77,27 +83,42 @@ end
 
 
 function changeTurn(tookLong)
-	print("tookLong")
-	local i = math.random(#db)
+	print("legal")
+	if tookLong == true then
+		print("aqui")
+		print(db[gameInfo.turnKey].alive)
+		print(db[gameInfo.turnKey].hasShot)
+		tfm.exec.killPlayer(gameInfo.turn)
+		db[gameInfo.turnKey].alive = false
+		gameInfo.alivePlayers = gameInfo.alivePlayers - 1
+		sendMsg(gameInfo.turn.. "" ..translation.tookLong, "blue")
+	else
+		print("na rel e aqui")
+		-- obrigado stackoverflow eu te amo
+		local keyset = {}
+		for k in pairs(db) do
+		    table.insert(keyset, k)
+		end
 
-	while db[i].name == gameInfo.turn do
-		i = math.random(#db)
-	end
+		local key = keyset[math.random(#keyset)]
+		while db[key].name == gameInfo.turn or db[key].alive == false do
+			key = keyset[math.random(#keyset)]
+		end
 
-	db[i].myTurn = true
-	gameInfo.turn = db[i].name
-	if tookLong then
-		sendMsg(db[i].name.. "" ..translation.tookLong, "blue")
-		sendMsg(db[i].name.. "" ..translation.yourTurn, "blue")
+		gameInfo.turn = db[key].name
+		gameInfo.turnKey = key
+
+		sendMsg(db[key].name.. "" ..translation.yourTurn, "blue")
 	end
-	sendMsg(db[i].name.. "" ..translation.yourTurn, "blue")
 end
 
 function fireGun(n)
-	if db[n].myTurn then
+	if n == gameInfo.turn then
+		db[gameInfo.turnKey].hasShot = true
 		if math.random(6) == 1 then
 			tfm.exec.killPlayer(n)
 			gameInfo.alivePlayers = gameInfo.alivePlayers - 1
+			db[n].alive = false
 			sendMsg(n.. "" ..translation.playerDied, "red")
 		else
 			sendMsg(n.. "" ..translation.playerSurvived, "blue")
@@ -108,90 +129,142 @@ end
 function endGame()
 	db = {}
 	gameInfo.gameStarted =  false
+	gameInfo.turn = ""
+	gameInfo.turnKey = ""
 	gameInfo.alivePlayers = 0
 
 	sendMsg(translation.gameEnd, "green")
 
-	if #tfm.get.room.playerList > 6 then
-		sendMsg(translation.choosePlayers:gsub("PLACEHOLDER", words[math.random(#words)]), "green")
-		gameInfo.choosingPlayers = true
-	else
-		for k,v in pairs(tfm.get.room.playerList) do
-			if not db[k] then
-				db[k] = {
-					name = k,
-					timesSurvived = 0,
-					myTurn = false
-				}
+	sleep.run(function(sleep)
+		sleep(5000)
+		if jogadores > neededPlayers then
+			sendMsg(translation.choosePlayers:gsub("PLACEHOLDER", gameInfo.word), "green")
+			gameInfo.choosingPlayers = true
+		elseif jogadores == neededPlayers then
+			for k,v in pairs(tfm.get.room.playerList) do
+				tfm.exec.respawnPlayer(k)
+				if not db[k] then
+					db[k] = {
+						name = k,
+						timesSurvived = 0,
+						alive = true,
+						hasShot = false
+					}
+				end
 			end
+			startGame()
 		end
-	end
+	end)
 end
 
 function startGame()
+	print("oi")
 	gameInfo.gameStarted = true --gdb
 	gameInfo.choosingPlayers = false
-	gameInfo.alivePlayers = 6 --gdb
+	gameInfo.alivePlayers = neededPlayers --gdb
 
-	changeTurn()
-	while gameInfo.alivePlayers ~= 1 do
-		sleep.run(function(sleep)
+	sendMsg(translation.starting, "red")
+
+	sleep.run(function(sleep)
+		sleep(5000)
+		changeTurn()
+
+		while gameInfo.alivePlayers ~= 1 do
 			sleep(5000)
-			if true then changeTurn() end
-			changeTurn(true)
-		end)
-	end
-	endGame()
+			if db[gameInfo.turnKey].hasShot == false and db[gameInfo.turnKey].alive == true then
+				changeTurn(true)
+			else
+				changeTurn()
+			end
+				sleep(5000)
+		end
+		endGame()
+	end)
 end
 
 function eventLoop() sleep.loop() end
 
 function eventNewPlayer(n)
+	jogadores = jogadores + 1
+	if jogadores == 1 then tfm.exec.respawnPlayer(n) end
 	system.bindKeyboard(n,32,true)
 	sendMsg(translation.welcome, "green", n)
 	sendMsg(n.. " " ..translation.playerJoined, "blue")
+	tfm.exec.addImage("1799fc7574c.png", "?0", -4, 0, n, 0.817, 0.5)
+	tfm.exec.addImage("179aaa7dfa1.png", "!7", -4, 0, n, 0.585, 0.345)
 
-	if gameInfo.gameStarted and #tfm.get.room.playerList > 6 then return end
+	if gameInfo.gameStarted then return end
+
+	tfm.exec.respawnPlayer(n)
 	if not db[n] then
 		db[n] = {
 			name = n,
 			timesSurvived = 0,
-			myTurn = false
+			alive = true,
+			hasShot = false
 		}
 	end
 
-	if #tfm.get.room.playerList == 6 then startGame() end
+	if jogadores == neededPlayers then startGame() end
+	
 end
 
 table.foreach(tfm.get.room.playerList, eventNewPlayer)
 
 function eventPlayerLeft(n)
 	sendMsg(n.. " " ..translation.playerLeft, "red")
+	if db[n] then db[n].alive = false end
+	jogadores = jogadores - 1
 end
 
 function eventPlayerDied(n)
-	tfm.exec.respawnPlayer(n)
+	--tfm.exec.respawnPlayer(n)
+	if tfm.get.room.playerList[n].y < 390 then
+        tfm.exec.addImage(sangues[math.random(#sangues)], "_1", tfm.get.room.playerList[n].x - 40, tfm.get.room.playerList[n].y - 50, nil)
+        tfm.exec.addImage(sangues[math.random(#sangues)], "_1", tfm.get.room.playerList[n].x - 60, tfm.get.room.playerList[n].y - 50, nil)
+        tfm.exec.addImage(sangues[math.random(#sangues)], "_1", tfm.get.room.playerList[n].x - 50, tfm.get.room.playerList[n].y - 40, nil)
+        tfm.exec.addImage(sangues[math.random(#sangues)], "_1", tfm.get.room.playerList[n].x - 50, tfm.get.room.playerList[n].y - 60, nil)
+    end
 end
 
-function eventChatMessage(n)
+function eventChatMessage(n, m)
 	if gameInfo.choosingPlayers then
-		if not db[n] then
-			db[n] = {
-				name = n,
-				timesSurvived = 0,
-				myTurn = false
-			}
-		end
+		if  m == gameInfo.word then
+			tfm.exec.respawnPlayer(n)
+			if not db[n] then
+				db[n] = {
+					name = n,
+					timesSurvived = 0,
+					alive = true,
+					hasShot = false
+				}
+			end
 
-		if #db == 6 then
-			startGame()
+			local keyset = {}
+			for k in pairs(db) do
+			    table.insert(keyset, k)
+			end
+
+			if #keyset == neededPlayers then
+				startGame()
+			end
 		end
+	end
+end
+
+function eventChatCommand(n, cmd)
+	if cmd == "help" or cmd == "ajuda" then
+		sendMsg("sem comandos ainda ¯\\_(ツ)_/¯", "green", n)
+	elseif cmd == "comandos" or cmd == "commands" then
+		sendMsg("sem comandos ainda ¯\\_(ツ)_/¯", "green", n)
 	end
 end
 
 function eventKeyboard(n, k)
 	if not db[n] then return end
-	if k == 32 then
-		fireGun(n)
+	if n == gameInfo.turn then
+		if k == 32 then
+			fireGun(n)
+		end
 	end
 end
