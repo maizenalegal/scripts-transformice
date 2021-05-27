@@ -249,7 +249,7 @@ function eventChatMessage(n, m)
 end
 
 function eventChatCommand(n, cmd)
-	if cmd == "help" or cmd == "ajuda" then
+	if cmd == "tutorial" then
 		sendMsg("Roleta-russa é um jogo de azar onde os participantes colocam uma bala — tipicamente apenas uma — em uma das câmaras de um revólver. O tambor do revólver é girado e fechado, de modo a que localização da bala seja desconhecida. Os participantes apontam o revólver para suas cabeças e atiram, correndo o risco da provável morte caso a bala esteja na câmara engatilhada.<BR>Tirado da Wikipedia.", "green", n)
 	elseif cmd == "comandos" or cmd == "commands" then
 		sendMsg("<J>!<N>ajuda — Mostra como o jogo funciona.", "green", n)
